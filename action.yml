@@ -51,6 +51,6 @@ runs:
         git add -A
         git commit -m "CD: ${{ env.gh_bot_pr_title }}"
         git push --force --set-upstream origin "${{ env.bot_branch }}"
-        gh pr create --base "${{ env.default_branch }}" --fill --label "${{ env.gh_bot_label }}" --reviewer "${GITHUB_REPOSITORY_OWNER}"
+        gh pr create --base "${{ env.default_branch }}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
       env:
         GH_TOKEN: ${{ github.token }}
