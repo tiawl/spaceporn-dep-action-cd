@@ -55,9 +55,11 @@ jobs:
     - name: Prepare CD
       id: prepare
       run: |
-        printf 'tag=%s\n' "$(git describe --tags --abbrev=0)" >> "${GITHUB_OUTPUT}"
+        tag="$(git describe --tags --abbrev=0)"
+        git checkout "${tag}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
+    - uses: ./
       with:
         repository_name: "${{ matrix.repo.dep }}"
         user: "${{ matrix.repo.user }}"
@@ -90,9 +92,11 @@ jobs:
     - name: Prepare dump
       id: prepare
       run: |
-        printf 'tag=%s\n' "$(git describe --tags --abbrev=0)" >> "${GITHUB_OUTPUT}"
+        tag="$(git describe --tags --abbrev=0)"
+        git checkout "${tag}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
+    - uses: ./
       with:
         repository_name: "${{ matrix.repo }}"
         user: "${{ github.event.repository.name }}"
