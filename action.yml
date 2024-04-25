@@ -10,6 +10,9 @@ inputs:
   tag:
     description: 'The pushed tag'
     required: true
+  token:
+    description: 'The github token'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -33,4 +36,4 @@ runs:
           /repos/${GITHUB_REPOSITORY_OWNER}/${{ inputs.user }}/dispatches \
           -f "${event_type}" -F "${dependency}" -F "${tag}" -F "${hash}"
       env:
-        GH_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ inputs.token }}
