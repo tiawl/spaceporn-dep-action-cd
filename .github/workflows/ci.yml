@@ -59,7 +59,7 @@ jobs:
         git checkout "${tag}"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
-    - uses: ./
+    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
       with:
         repository_name: "${{ matrix.repo.dep }}"
         user: "${{ matrix.repo.user }}"
@@ -96,7 +96,7 @@ jobs:
         git checkout "${tag}"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
-    - uses: ./
+    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
       with:
         repository_name: "${{ matrix.repo }}"
         user: "${{ github.event.repository.name }}"
