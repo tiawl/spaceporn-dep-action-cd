@@ -1,13 +1,13 @@
 name: 'CD ping'
 description: 'Notify the user of the dependency that a new release is available'
 inputs:
-  repository_name: #${{ github.event.repository.name }}
+  repository_name:
     description: 'The name of the repository'
     required: true
   user:
     description: 'The User of this repository'
     required: true
-  tag:  #GITHUB_REF_NAME
+  tag:
     description: 'The pushed tag'
     required: true
 runs:
