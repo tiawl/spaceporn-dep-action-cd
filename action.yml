@@ -23,16 +23,14 @@ runs:
     - name: Notify ${{ inputs.user }}
       shell: ${{ env.shell }}
       run: |
-        event_type='"event_type":"ping"'
-        dependency="\"dependency\":\"${{ inputs.repository_name }}\""
-        tag="\"tag\":\"${{ inputs.tag }}\""
-        hash="\"hash\":\"$(zig fetch .)\""
-        client_payload="\"client_payload\":{${dependency},${tag},${hash},}"
-        json="{${event_type},${client_payload}}"
-        gh api --method POST --input - \
-          -H 'X-GitHub-Api-Version: 2022-11-28' \
+        event_type='event_type=ping'
+        dependency="client_payload[dependency]=${{ inputs.repository_name }}"
+        tag="client_payload[tag]=${{ inputs.tag }}"
+        hash="client_payload[hash]=$(zig fetch .)"
+        gh api --method POST \
           -H 'Accept: application/vnd.github+json' \
+          -H 'X-GitHub-Api-Version: 2022-11-28' \
           /repos/${GITHUB_REPOSITORY_OWNER}/${{ inputs.user }}/dispatches \
-            <<< "${json}"
+          -f "${event_type}" -F "${dependency}" -F "${tag}" -F "${hash}"
       env:
         GH_TOKEN: ${{ github.token }}
