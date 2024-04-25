@@ -1,13 +1,18 @@
-name: 'CD'
-description: 'Clone the user of the dependency, change its build.zig.zon and make a PR'
+name: 'CD ping'
+description: 'Notify the user of the dependency that a new release is available'
 inputs:
+  repository_name: #${{ github.event.repository.name }}
+    description: 'The name of the repository'
+    required: true
   user:
-    description: 'User of the dependency'
+    description: 'The User of this repository'
+    required: true
+  tag:  #GITHUB_REF_NAME
+    description: 'The pushed tag'
     required: true
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
     - uses: tiawl/spaceporn-dep-action-env@v1
 
     - name: Setup Zig
@@ -15,42 +20,19 @@ runs:
       with:
         version: ${{ env.zig_version }}
 
-    - name: Set variables
-      id: vars
+    - name: Notify ${{ inputs.user }}
       shell: ${{ env.shell }}
       run: |
-        printf 'tmp=%s\n' "$(mktemp -d)" >> "${GITHUB_OUTPUT}"
-        printf 'hash=%s\n' "$(zig fetch .)" >> "${GITHUB_OUTPUT}"
-
-    - name: Clone ${{ inputs.user }}
-      shell: ${{ env.shell }}
-      run: |
-        git clone --recurse-submodules "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.user }}.git" "${{ steps.vars.outputs.tmp }}"
-
-    - name: Setup git user information
-      working-directory: ${{ steps.vars.outputs.tmp }}
-      shell: ${{ env.shell }}
-      run: |
-        git config user.name "${{ env.gh_bot_name }}"
-        git config user.email "${{ env.gh_bot_email }}"
-        git checkout -b "${{ env.bot_branch }}"
-
-    - name: Update ${{ inputs.user }}/build.zig.zon
-      working-directory: ${{ steps.vars.outputs.tmp }}
-      shell: ${{ env.shell }}
-      run: |
-        zon_url="$(grep -o "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/archive/.*\.tar\.gz" build.zig.zon)"
-        zon_hash="$(zig fetch "${zon_url}")"
-        sed -i "s@${zon_url}@${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/archive/refs/tags/${GITHUB_REF_NAME}.tar.gz@;
-                s@${zon_hash}@${{ steps.vars.outputs.hash }}@" build.zig.zon
-
-    - name: Create Pull Request
-      working-directory: ${{ steps.vars.outputs.tmp }}
-      shell: ${{ env.shell }}
-      run: |
-        git add -A
-        git commit -m "CD: ${{ env.gh_bot_pr_title }}"
-        git push --force --set-upstream origin "${{ env.bot_branch }}"
-        gh pr create --base "${{ env.default_branch }}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
+        event_type='"event_type":"ping"'
+        dependency="\"dependency\":\"${{ inputs.repository_name }}\""
+        tag="\"tag\":\"${{ inputs.tag }}\""
+        hash="\"hash\":\"$(zig fetch .)\""
+        client_payload="\"client_payload\":{${dependency},${tag},${hash},}"
+        json="{${event_type},${client_payload}}"
+        gh api --method POST --input - \
+          -H 'X-GitHub-Api-Version: 2022-11-28' \
+          -H 'Accept: application/vnd.github+json' \
+          /repos/${GITHUB_REPOSITORY_OWNER}/${{ inputs.user }}/dispatches \
+            <<< "${json}"
       env:
         GH_TOKEN: ${{ github.token }}
