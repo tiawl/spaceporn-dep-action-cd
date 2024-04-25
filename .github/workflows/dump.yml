@@ -1,0 +1,16 @@
+name: ci dump
+
+on:
+  repository_dispatch:
+    types:
+      - ping
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump client_payload
+        env:
+          CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: |
+          printf '%s\n' "${CLIENT_PAYLOAD}"
