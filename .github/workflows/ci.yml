@@ -80,6 +80,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ matrix.repo }}"
 
     - name: Prepare dump
       id: prepare
@@ -88,7 +90,7 @@ jobs:
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@ci
       with:
-        repository_name: "${{ github.event.repository.name }}"
-        user: "${{ matrix.repo }}"
+        repository_name: "${{ matrix.repo }}"
+        user: "${{ github.event.repository.name }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ secrets.PAT }}"
