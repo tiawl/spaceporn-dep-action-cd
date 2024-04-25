@@ -54,13 +54,17 @@ jobs:
       id: prepare
       run: |
         printf 'tag=%s\n' "$(git describe --tags --abbrev=0)" >> "${GITHUB_OUTPUT}"
+        ##printf 'tag=%s\n' "$(git describe --tags --abbrev=0)" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
-      with:
-        repository_name: "${{ matrix.repo.dep }}"
-        user: "${{ matrix.repo.user }}"
-        tag: "${{ steps.prepare.outputs.tag }}"
-        token: "${{ secrets.PAT }}"
+    - name: echo
+      run: |
+        echo "TAG=${{ steps.prepare.outputs.tag }}"
+        ##- uses: tiawl/spaceporn-dep-action-cd-ping@ci
+        ##  with:
+        ##    repository_name: "${{ matrix.repo.dep }}"
+        ##    user: "${{ matrix.repo.user }}"
+        ##    tag: "${{ steps.prepare.outputs.tag }}"
+        ##    token: "${{ secrets.PAT }}"
 
   dumps:
     permissions:
