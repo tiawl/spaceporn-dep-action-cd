@@ -92,7 +92,7 @@ jobs:
     - name: Prepare dump
       id: prepare
       run: |
-        tag="$(git describe --tags --abbrev=0)"
+        tag="$(git describe --tags --abbrev=0 || :)"
         if [[ -n "${tag}" ]]; then git checkout "${tag}"
         else tag='0.0.0'; fi
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
