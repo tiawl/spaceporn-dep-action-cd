@@ -1,4 +1,4 @@
-name: ci dump
+name: dump
 
 on:
   repository_dispatch:

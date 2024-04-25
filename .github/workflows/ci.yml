@@ -81,7 +81,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Prepare dumping
+    - name: Prepare dump
       id: prepare
       run: |
         printf 'tag=%s\n' "$(git describe --tags --abbrev=0)" >> "${GITHUB_OUTPUT}"
@@ -90,5 +90,5 @@ jobs:
       with:
         repository_name: "${{ github.event.repository.name }}"
         user: "${{ matrix.repo }}"
-        tag: 'v1'
+        tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ secrets.PAT }}"
