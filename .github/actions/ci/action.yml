@@ -1,0 +1,35 @@
+name: 'ci'
+description: 'Run CI test for CD ping'
+inputs:
+  dependency:
+    description: 'The used dependency'
+    required: true
+  user:
+    description: 'The User of this repository'
+    required: true
+  token:
+    description: 'The github token'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: Prepare CD
+      shell: bash
+      id: prepare
+      run: |
+        tag="$(git describe --tags --abbrev=0)"
+        git checkout "${tag}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+
+    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
+      with:
+        repository_name: "${{ inputs.dependency }}"
+        user: "${{ inputs.user }}"
+        tag: "${{ steps.prepare.outputs.tag }}"
+        token: "${{ inputs.token }}"
