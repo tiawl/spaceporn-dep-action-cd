@@ -7,6 +7,9 @@ inputs:
   user:
     description: 'The User of this repository'
     required: true
+  token:
+    description: 'The github token'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -17,6 +20,7 @@ runs:
         fetch-tags: true
 
     - name: Prepare CD
+      shell: bash
       id: prepare
       run: |
         tag="$(git describe --tags --abbrev=0)"
@@ -28,4 +32,4 @@ runs:
         repository_name: "${{ inputs.dependency }}"
         user: "${{ inputs.user }}"
         tag: "${{ steps.prepare.outputs.tag }}"
-        token: "${{ secrets.PAT }}"
+        token: "${{ inputs.token }}"

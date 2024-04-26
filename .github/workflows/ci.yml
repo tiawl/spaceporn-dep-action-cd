@@ -27,6 +27,7 @@ jobs:
       with:
         dependency: 'toolbox'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-vulkan:
     permissions:
       contents: write
@@ -41,6 +42,7 @@ jobs:
       with:
         dependency: 'vulkan.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-wayland:
     permissions:
       contents: write
@@ -55,6 +57,7 @@ jobs:
       with:
         dependency: 'wayland.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-X11:
     permissions:
       contents: write
@@ -69,6 +72,7 @@ jobs:
       with:
         dependency: 'X11.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-glfw:
     permissions:
       contents: write
@@ -83,6 +87,7 @@ jobs:
       with:
         dependency: 'glfw.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-cimgui:
     permissions:
       contents: write
@@ -97,6 +102,7 @@ jobs:
       with:
         dependency: 'cimgui.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-spirv:
     permissions:
       contents: write
@@ -111,6 +117,7 @@ jobs:
       with:
         dependency: 'spirv.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-glslang:
     permissions:
       contents: write
@@ -125,6 +132,7 @@ jobs:
       with:
         dependency: 'glslang.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-shaderc:
     permissions:
       contents: write
@@ -139,6 +147,7 @@ jobs:
       with:
         dependency: 'shaderc.zig'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-env-action:
     permissions:
       contents: write
@@ -157,6 +166,7 @@ jobs:
       with:
         dependency: 'spaceporn-dep-action-env'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-bot-action:
     permissions:
       contents: write
@@ -178,6 +188,7 @@ jobs:
       with:
         dependency: 'spaceporn-dep-action-bot'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-ci-action:
     permissions:
       contents: write
@@ -200,6 +211,7 @@ jobs:
       with:
         dependency: 'spaceporn-dep-action-ci'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-ping-action:
     permissions:
       contents: write
@@ -227,6 +239,7 @@ jobs:
       with:
         dependency: 'spaceporn-dep-action-cd-ping'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   test-pong-action:
     permissions:
       contents: write
@@ -255,6 +268,7 @@ jobs:
       with:
         dependency: 'spaceporn-dep-action-cd-pong'
         user: "${{ matrix.user }}"
+        token: "${{ secrets.PAT }}"
   ping:
     permissions:
       contents: write
