@@ -333,8 +333,8 @@ jobs:
       run: |
         tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l || :)"
         if [[ -z "${tags}" || "${tags}" == '0' ]]; then tag='0.0.0'
-        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"
-        elif [[ -n "${USED}" ]]; then git checkout "${USED}"; fi
+        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; fi
+        git show-ref --tags "${tag:-"${USED}"}" --quiet && git checkout "${tag:-"${USED}"}"
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
