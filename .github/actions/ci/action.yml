@@ -27,7 +27,7 @@ runs:
         git checkout "${tag}"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
+    - uses: tiawl/spaceporn-dep-action-cd-ping@bot
       with:
         repository_name: "${{ inputs.dependency }}"
         user: "${{ inputs.user }}"
