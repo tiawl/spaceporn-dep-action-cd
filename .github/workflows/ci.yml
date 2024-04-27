@@ -308,34 +308,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        repository: "${{ github.repository_owner }}/${{ matrix.repo }}"
-        fetch-depth: 0
-        fetch-tags: true
-
-    - name: Prepare dump
-      run: |
-        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l)"
-        if [[ "${tags}" == '0' ]]; then tag='0.0.0'
-        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"; fi
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
-        if [[ -n "${tag}" ]]; then printf 'ready=true\n'
-        else printf 'ready=false\n'; fi >> "${GITHUB_ENV}"
-
-    - uses: tiawl/spaceporn-dep-action-cd-ping@bot
-      if: env.ready == 'true'
-      with:
-        repository_name: "${{ matrix.repo }}"
-        user: "${{ github.event.repository.name }}"
-        tag: "${{ env.tag }}"
-        token: "${{ secrets.PAT }}"
-
-    - uses: actions/checkout@v4
-      if: env.ready != 'true'
-      with:
         repository: "${{ github.repository_owner }}/${{ github.event.repository.name }}"
 
     - name: Search current tag selected by user
-      if: env.ready != 'true'
+      id: used
       env:
         DEPENDENCY: "${{ github.repository_owner }}/${{ matrix.repo }}"
       shell: bash
@@ -344,15 +320,26 @@ jobs:
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
 
     - uses: actions/checkout@v4
-      if: env.ready != 'true'
       with:
         repository: "${{ github.repository_owner }}/${{ matrix.repo }}"
-        ref: "${{ env.tag }}"
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: Prepare dump
+      id: prepare
+      env:
+        USED: "${{ steps.used.outputs.tag }}"
+      shell: bash
+      run: |
+        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l)"
+        if [[ "${tags}" == '0' ]]; then tag='0.0.0'
+        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"
+        else git checkout "${USED}"; fi
+        printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_ENV}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
-      if: env.ready != 'true'
       with:
         repository_name: "${{ matrix.repo }}"
         user: "${{ github.event.repository.name }}"
-        tag: "${{ env.tag }}"
+        tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ secrets.PAT }}"

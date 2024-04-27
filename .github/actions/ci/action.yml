@@ -15,35 +15,10 @@ runs:
   steps:
     - uses: actions/checkout@v4
       with:
-        repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
-        fetch-depth: 0
-        fetch-tags: true
-
-    - name: Prepare CD
-      shell: bash
-      run: |
-        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l)"
-        if [[ "${tags}" == '0' ]]; then tag='0.0.0'
-        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"; fi
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
-        if [[ -n "${tag}" ]]; then printf 'ready=true\n'
-        else printf 'ready=false\n'; fi >> "${GITHUB_ENV}"
-
-    - uses: tiawl/spaceporn-dep-action-cd-ping@bot
-      if: env.ready == 'true'
-      with:
-        repository_name: "${{ inputs.dependency }}"
-        user: "${{ inputs.user }}"
-        tag: "${{ env.tag }}"
-        token: "${{ inputs.token }}"
-
-    - uses: actions/checkout@v4
-      if: env.ready != 'true'
-      with:
         repository: "${{ github.repository_owner }}/${{ inputs.user }}"
 
     - name: Search current tag selected by user
-      if: env.ready != 'true'
+      id: used
       env:
         DEPENDENCY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
       shell: bash
@@ -52,15 +27,26 @@ runs:
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
 
     - uses: actions/checkout@v4
-      if: env.ready != 'true'
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
-        ref: "${{ env.tag }}"
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: Prepare CD
+      id: prepare
+      env:
+        USED: "${{ steps.used.outputs.tag }}"
+      shell: bash
+      run: |
+        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l)"
+        if [[ "${tags}" == '0' ]]; then tag='0.0.0'
+        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"
+        else git checkout "${USED}"; fi
+        printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_ENV}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
-      if: env.ready != 'true'
       with:
         repository_name: "${{ inputs.dependency }}"
         user: "${{ inputs.user }}"
-        tag: "${{ env.tag }}"
+        tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ inputs.token }}"
