@@ -23,7 +23,7 @@ runs:
       shell: bash
       id: prepare
       run: |
-        tag="$(git describe --tags --abbrev=0)"
+        tag="$(git tag --sort=taggerdate | tail -1)"
         git checkout "${tag}"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
