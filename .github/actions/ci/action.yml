@@ -27,8 +27,8 @@ runs:
         if [[ "${tags}" == '0' ]]; then tag='0.0.0'
         elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"; fi
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
-        if [[ -n "${tag}" ]]; then printf 'ready=true\n' >> "${GITHUB_OUTPUT}"
-        else printf 'ready=false\n' >> "${GITHUB_OUTPUT}"; fi
+        if [[ -n "${tag}" ]]; then printf 'ready=true\n'
+        else printf 'ready=false\n'; fi >> "${GITHUB_OUTPUT}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
       if: steps.prepare.outputs.ready == 'true'
