@@ -315,8 +315,8 @@ jobs:
     - name: Prepare dump
       id: prepare
       run: |
-        if ! tag="$(git tag --sort=taggerdate | tail -1)"; then tag='0.0.0'
-        else git checkout "${tag}"; fi
+        tag="$(git tag --sort=taggerdate | tail -1)"
+        if [[ -n "${tag}" ]]; then git checkout "${tag}"; else tag='0.0.0'; fi
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
