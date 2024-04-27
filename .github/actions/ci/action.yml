@@ -15,17 +15,34 @@ runs:
   steps:
     - uses: actions/checkout@v4
       with:
+        repository: "${{ github.repository_owner }}/${{ inputs.user }}"
+
+    - name: Search current tag selected by user
+      id: used
+      env:
+        DEPENDENCY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+      shell: bash
+      run: |
+        tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u || :)"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+
+    - uses: actions/checkout@v4
+      with:
         repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
         fetch-depth: 0
         fetch-tags: true
 
     - name: Prepare CD
-      shell: bash
       id: prepare
+      env:
+        USED: "${{ steps.used.outputs.tag }}"
+      shell: bash
       run: |
-        tag="$(git describe --tags --abbrev=0)"
-        git checkout "${tag}"
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l || :)"
+        if [[ -z "${tags}" || "${tags}" == '0' ]]; then tag='0.0.0'
+        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; fi
+        git show-ref --tags "${tag:-"${USED}"}" --quiet && git checkout "${tag:-"${USED}"}"
+        printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
       with:
