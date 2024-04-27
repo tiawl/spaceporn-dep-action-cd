@@ -319,7 +319,7 @@ jobs:
         else git checkout "${tag}"; fi
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@ci
+    - uses: tiawl/spaceporn-dep-action-cd-ping@bot
       with:
         repository_name: "${{ matrix.repo }}"
         user: "${{ github.event.repository.name }}"
