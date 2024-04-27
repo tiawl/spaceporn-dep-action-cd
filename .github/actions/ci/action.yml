@@ -20,49 +20,47 @@ runs:
         fetch-tags: true
 
     - name: Prepare CD
-      id: prepare
       shell: bash
       run: |
         tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l)"
         if [[ "${tags}" == '0' ]]; then tag='0.0.0'
         elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"; fi
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
         if [[ -n "${tag}" ]]; then printf 'ready=true\n'
-        else printf 'ready=false\n'; fi >> "${GITHUB_OUTPUT}"
+        else printf 'ready=false\n'; fi >> "${GITHUB_ENV}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
-      if: steps.prepare.outputs.ready == 'true'
+      if: env.ready == 'true'
       with:
         repository_name: "${{ inputs.dependency }}"
         user: "${{ inputs.user }}"
-        tag: "${{ steps.prepare.outputs.tag }}"
+        tag: "${{ env.tag }}"
         token: "${{ inputs.token }}"
 
     - uses: actions/checkout@v4
-      if: steps.prepare.outputs.ready != 'true'
+      if: env.ready != 'true'
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.user }}"
 
     - name: Search current tag selected by user
-      if: steps.prepare.outputs.ready != 'true'
-      id: user
+      if: env.ready != 'true'
       env:
         DEPENDENCY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
       shell: bash
       run: |
         tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u)"
-        printf 'dep_tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
 
     - uses: actions/checkout@v4
-      if: steps.prepare.outputs.ready != 'true'
+      if: env.ready != 'true'
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
-        ref: "${{ steps.user.outputs.dep_tag }}"
+        ref: "${{ env.tag }}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
-      if: steps.prepare.outputs.ready != 'true'
+      if: env.ready != 'true'
       with:
         repository_name: "${{ inputs.dependency }}"
         user: "${{ inputs.user }}"
-        tag: "${{ steps.user.outputs.dep_tag }}"
+        tag: "${{ env.tag }}"
         token: "${{ inputs.token }}"
