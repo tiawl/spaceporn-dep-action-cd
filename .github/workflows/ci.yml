@@ -317,7 +317,7 @@ jobs:
       shell: bash
       run: |
         tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u)"
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_ENV}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
     - uses: actions/checkout@v4
       with:
@@ -335,7 +335,7 @@ jobs:
         if [[ "${tags}" == '0' ]]; then tag='0.0.0'
         elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"
         else git checkout "${USED}"; fi
-        printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_ENV}"
+        printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
     - uses: tiawl/spaceporn-dep-action-cd-ping@bot
       with:
