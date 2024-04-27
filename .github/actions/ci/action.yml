@@ -38,9 +38,9 @@ runs:
         USED: "${{ steps.used.outputs.tag }}"
       shell: bash
       run: |
-        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l || printf '0\n')"
-        if [[ "${tags}" -eq 0 ]]; then tag='0.0.0'
-        elif [[ "${tags}" -eq 1 ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"
+        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l || :)"
+        if [[ -z "${tags}" || "${tags}" == '0' ]]; then tag='0.0.0'
+        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; git checkout "${tag}"
         elif [[ -n "${USED}" ]]; then git checkout "${USED}"; fi
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
