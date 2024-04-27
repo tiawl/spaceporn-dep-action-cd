@@ -316,7 +316,7 @@ jobs:
         DEPENDENCY: "${{ github.repository_owner }}/${{ matrix.repo }}"
       shell: bash
       run: |
-        tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u)"
+        tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u || :)"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
     - uses: actions/checkout@v4
