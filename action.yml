@@ -30,6 +30,8 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.repository_name }}"
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Notify ${{ inputs.user }}
       env:
