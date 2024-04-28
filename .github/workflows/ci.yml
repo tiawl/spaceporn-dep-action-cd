@@ -83,25 +83,31 @@ jobs:
 
     - uses: actions/checkout@v4
 
-    - name: Wait for the new run to finish
-      id: current_run
+    - name: Wait for the new job to start
       env:
+        FIELD: 'databaseId'
         GH_TOKEN: "${{ github.token }}"
-        LIST_FIELD: 'databaseId'
         PREVIOUS_RUN_ID: "${{ steps.previous_run.outputs.id }}"
-        VIEW_FIELD: 'conclusion'
       shell: bash
       run: |
         id="${PREVIOUS_RUN_ID}"
         while [[ "${id}" == "${PREVIOUS_RUN_ID}" ]]
         do
           sleep 0.1
-          id="$(gh run list -w "${WORKFLOW_NAME}" -L 1 --json "${LIST_FIELD}" | jq ".[] | .${LIST_FIELD}")"
+          id="$(gh run list -w "${WORKFLOW_NAME}" -L 1 --json "${FIELD}" | jq ".[] | .${FIELD}")"
         done
+
+    - name: Wait for the new job to end
+      id: current_run
+      env:
+        FIELD: 'conclusion'
+        GH_TOKEN: "${{ github.token }}"
+      shell: bash
+      run: |
         while [[ "${conclusion:-}" != 'success' && "${conclusion:-}" != 'failure' ]]
         do
           sleep 0.1
-          conclusion="$(gh run view --json "${VIEW_FIELD}" "${id}" | jq -r ".${VIEW_FIELD}")"
+          conclusion="$(gh run view --json "${FIELD}" "${id}" | jq -r ".${FIELD}")"
         done
         printf 'result=%s\n' "${conclusion}" >> "${GITHUB_OUTPUT}"
 

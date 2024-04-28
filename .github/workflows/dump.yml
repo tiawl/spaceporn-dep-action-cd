@@ -41,15 +41,23 @@ jobs:
         shell: bash
         run: |
           git show-ref --tags "${PAYLOAD_TAG}" --quiet && git checkout "${PAYLOAD_TAG}"
+          if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
+          then
+            printf 'zig=true\n' >> "${GITHUB_ENV}"
+          else
+            printf 'zig=false\n' >> "${GITHUB_ENV}"
+          fi
 
       - uses: goto-bus-stop/setup-zig@v2.2.0
+        if: env.zig == 'true'
 
       - name: Check client payload hash field
         env:
+          ZIG: "${{ env.zig }}"
           PAYLOAD_HASH: "${{ github.event.client_payload.hash }}"
         shell: bash
         run: |
-          if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
+          if [[ "${ZIG}" == 'true' ]]
           then
             [[ "${PAYLOAD_HASH}" == "$(zig fetch .)" ]]
           else
