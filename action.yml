@@ -36,7 +36,7 @@ runs:
     - name: Notify ${{ inputs.user }}
       env:
         ENDPOINT: "/repos/${{ github.repository_owner }}/${{ inputs.user }}/dispatches"
-        EVENT_TYPE: 'event_type=ping'
+        EVENT_TYPE: "event_type=ping-${{ inputs.repository_name }}"
         GH_TOKEN: "${{ inputs.token }}"
         IS_COMPOSITE: "${{ inputs.is_composite }}"
         PAYLOAD_DEPENDENCY: "client_payload[dependency]=${{ inputs.repository_name }}"
