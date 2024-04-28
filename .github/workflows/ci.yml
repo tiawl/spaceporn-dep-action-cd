@@ -344,3 +344,4 @@ jobs:
         user: "${{ github.event.repository.name }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ secrets.PAT }}"
+    - uses: actions/checkout@v4
