@@ -30,7 +30,6 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.repository_name }}"
-        ref: "${{ inputs.tag }}"
 
     - name: Notify ${{ inputs.user }}
       env:
@@ -42,6 +41,7 @@ runs:
         TAG: "client_payload[tag]=${{ inputs.tag }}"
       shell: ${{ env.shell }}
       run: |
+        git show-ref --tags "${TAG}" --quiet && git checkout "${TAG}"
         hash="client_payload[hash]=$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch .; fi)"
         gh api --method POST \
           -H 'Accept: application/vnd.github+json' \
