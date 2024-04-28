@@ -337,7 +337,8 @@ jobs:
         git show-ref --tags "${tag:-"${USED}"}" --quiet && git checkout "${tag:-"${USED}"}"
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@bot
+    - uses: actions/checkout@v4
+    - uses: ./
       with:
         repository_name: "${{ matrix.repo }}"
         user: "${{ github.event.repository.name }}"

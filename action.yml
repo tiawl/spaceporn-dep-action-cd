@@ -27,6 +27,10 @@ runs:
       with:
         version: ${{ env.zig_version }}
 
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ inputs.repository_name }}"
+
     - name: Notify ${{ inputs.user }}
       env:
         DEPENDENCY: "client_payload[dependency]=${{ inputs.repository_name }}"
