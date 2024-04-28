@@ -4,6 +4,10 @@ inputs:
   dependency:
     description: 'The used dependency'
     required: true
+  is_composite:
+    description: 'Is this a composite action repository ?'
+    required: false
+    default: 'false'
   user:
     description: 'The User of this repository'
     required: true
@@ -44,9 +48,11 @@ runs:
         git show-ref --tags "${tag:-"${USED}"}" --quiet && git checkout "${tag:-"${USED}"}"
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-ping@bot
+    - uses: actions/checkout@v4
+    - uses: ./
       with:
         repository_name: "${{ inputs.dependency }}"
+        is_composite: "${{ inputs.is_composite }}"
         user: "${{ inputs.user }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ inputs.token }}"
