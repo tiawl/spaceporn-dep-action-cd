@@ -28,10 +28,12 @@ jobs:
           - spaceporn-dep-action-cd-pong
     runs-on: ubuntu-latest
     steps:
-    - uses: tiawl/spaceporn-dep-action-cd-ping@v1
+    - uses: actions/checkout@v4
+    - uses: ./
       with:
         repository_name: "${{ github.event.repository.name }}"
         is_composite: 'true'
         user: "${{ matrix.repo }}"
         tag: "${{ github.ref_name }}"
         token: "${{ secrets.PAT }}"
+    - uses: actions/checkout@v4
