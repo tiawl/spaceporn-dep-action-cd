@@ -28,3 +28,30 @@ jobs:
           CLIENT_PAYLOAD: "${{ toJson(github.event.client_payload) }}"
         run: |
           printf '%s\n' "${CLIENT_PAYLOAD}"
+
+      - uses: actions/checkout@v4
+        with:
+          repository: "${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}"
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Check client payload tag field
+        env:
+          PAYLOAD_TAG: "${{ github.event.client_payload.tag }}"
+        shell: bash
+        run: |
+          git show-ref --tags "${PAYLOAD_TAG}" --quiet && git checkout "${PAYLOAD_TAG}"
+
+      - uses: goto-bus-stop/setup-zig@v2.2.0
+
+      - name: Check client payload hash field
+        env:
+          PAYLOAD_HASH: "${{ github.event.client_payload.hash }}"
+        shell: bash
+        run: |
+          if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
+          then
+            [[ "${PAYLOAD_HASH}" == "$(zig fetch .)" ]]
+          else
+            [[ -z "${PAYLOAD_HASH}" ]]
+          fi
