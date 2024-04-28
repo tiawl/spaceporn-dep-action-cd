@@ -4,6 +4,10 @@ inputs:
   dependency:
     description: 'The used dependency'
     required: true
+  is_composite:
+    description: 'Is this a composite action repository ?'
+    required: false
+    default: 'false'
   user:
     description: 'The User of this repository'
     required: true
@@ -48,6 +52,7 @@ runs:
     - uses: ./
       with:
         repository_name: "${{ inputs.dependency }}"
+        is_composite: "${{ inputs.is_composite }}"
         user: "${{ inputs.user }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ inputs.token }}"
