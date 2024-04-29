@@ -62,9 +62,9 @@ jobs:
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
         if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
         then
-          printf 'is_composite=true\n' >> "${GITHUB_OUTPUT}"
-        else
           printf 'is_composite=false\n' >> "${GITHUB_OUTPUT}"
+        else
+          printf 'is_composite=true\n' >> "${GITHUB_OUTPUT}"
         fi
 
     - uses: actions/checkout@v4
