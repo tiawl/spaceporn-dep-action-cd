@@ -50,13 +50,14 @@ jobs:
 
       - name: Check client payload hash field
         env:
-          ZIG: "${{ env.zig }}"
           PAYLOAD_HASH: "${{ github.event.client_payload.hash }}"
+          URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}/archive/refs/tags/${{ github.event.client_payload.tag }}.tar.gz"
+          ZIG: "${{ env.zig }}"
         shell: bash
         run: |
           if [[ "${ZIG}" == 'true' ]]
           then
-            [[ "${PAYLOAD_HASH}" == "$(zig fetch "${GITHUB_WORKFLOW}")" ]]
+            [[ "${PAYLOAD_HASH}" == "$(zig fetch "${URL}")" ]]
           else
             [[ -z "${PAYLOAD_HASH}" ]]
           fi
