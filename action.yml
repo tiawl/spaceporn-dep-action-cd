@@ -1,3 +1,4 @@
+# dummy comment
 name: 'CD ping'
 description: 'Notify the user of the dependency that a new release is available'
 inputs:
