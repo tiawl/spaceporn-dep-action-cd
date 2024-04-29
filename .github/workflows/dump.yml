@@ -40,7 +40,7 @@ jobs:
           PAYLOAD_TAG: "${{ github.event.client_payload.tag }}"
         shell: bash
         run: |
-          git show-ref --tags "${PAYLOAD_TAG}" --quiet
+          git show-ref --tags "${PAYLOAD_TAG}"
           git checkout "${PAYLOAD_TAG}"
           if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
           then
