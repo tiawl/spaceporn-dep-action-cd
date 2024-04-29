@@ -10,7 +10,6 @@ jobs:
     permissions:
       contents: write
     strategy:
-      max-parallel: 1
       matrix:
         repo:
           - toolbox
@@ -72,12 +71,12 @@ jobs:
     - name: Keep the last run ID in memory
       id: previous_run
       env:
-        FIELD: 'databaseId'
         GH_TOKEN: "${{ github.token }}"
+        TITLE: "ping-${{ matrix.repo }}"
         WORKFLOW_NAME: 'dump'
       shell: bash
       run: |
-        id="$(gh run list -w "${WORKFLOW_NAME}" -L 1 --json "${FIELD}" | jq ".[] | .${FIELD}")"
+        id="$(gh run list -w "${WORKFLOW_NAME}" -L 100 --json 'databaseId,displayTitle' --jq "[.[] | select(.displayTitle | contains (\"${TITLE}\")) | .databaseId] | sort | .[-1]")"
         printf 'id=%s\n' "${id}" >> "${GITHUB_OUTPUT}"
 
     - uses: ./
@@ -93,16 +92,16 @@ jobs:
     - name: Wait for the new job to start
       id: start
       env:
-        FIELD: 'databaseId'
         GH_TOKEN: "${{ github.token }}"
         PREVIOUS_RUN_ID: "${{ steps.previous_run.outputs.id }}"
+        TITLE: "ping-${{ matrix.repo }}"
         WORKFLOW_NAME: 'dump'
       shell: bash
       run: |
         while [[ -z "${id:-}" || "${id:-}" == "${PREVIOUS_RUN_ID}" ]]
         do
           sleep 2
-          id="$(gh run list -w "${WORKFLOW_NAME}" -L 1 --json "${FIELD}" | jq ".[] | .${FIELD}")"
+          id="$(gh run list -w "${WORKFLOW_NAME}" -L 100 --json 'databaseId,displayTitle' --jq "[.[] | select(.displayTitle | contains (\"${TITLE}\")) | .databaseId] | sort | .[-1]")"
         done
         printf 'job_id=%s\n' "${id}" >> "${GITHUB_OUTPUT}"
 
