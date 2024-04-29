@@ -60,6 +60,12 @@ jobs:
         elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; fi
         git show-ref --tags "${tag:-"${USED}"}" --quiet && git checkout "${tag:-"${USED}"}"
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
+        if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
+        then
+          printf 'is_composite=true\n' >> "${GITHUB_OUTPUT}"
+        else
+          printf 'is_composite=false\n' >> "${GITHUB_OUTPUT}"
+        fi
 
     - uses: actions/checkout@v4
 
@@ -77,6 +83,7 @@ jobs:
     - uses: ./
       with:
         repository_name: "${{ matrix.repo }}"
+        is_composite: "${{ steps.prepare.outputs.is_composite }}"
         user: "${{ github.event.repository.name }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ secrets.PAT }}"
@@ -89,6 +96,7 @@ jobs:
         FIELD: 'databaseId'
         GH_TOKEN: "${{ github.token }}"
         PREVIOUS_RUN_ID: "${{ steps.previous_run.outputs.id }}"
+        WORKFLOW_NAME: 'dump'
       shell: bash
       run: |
         while [[ -z "${id:-}" || "${id:-}" == "${PREVIOUS_RUN_ID}" ]]
