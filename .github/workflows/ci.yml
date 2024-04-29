@@ -108,16 +108,18 @@ jobs:
     - name: Wait for the new job to end
       id: end
       env:
-        FIELD: 'conclusion'
+        CONCLUSION: 'conclusion'
         GH_TOKEN: "${{ github.token }}"
         ID: "${{ steps.start.outputs.job_id }}"
+        STATUS: 'status'
       shell: bash
       run: |
-        while [[ "${conclusion:-}" != 'success' && "${conclusion:-}" != 'failure' ]]
+        while [[ "${status:-}" != 'completed' ]]
         do
           sleep 2
-          conclusion="$(gh run view --json "${FIELD}" "${ID}" --jq ".${FIELD}")"
+          status="$(gh run view --json "${STATUS}" "${ID}" --jq ".${STATUS}")"
         done
+        conclusion="$(gh run view --json "${CONCLUSION}" "${ID}" --jq ".${CONCLUSION}")"
         printf 'job_result=%s\n' "${conclusion}" >> "${GITHUB_OUTPUT}"
 
     - name: Fail if the dump failed
