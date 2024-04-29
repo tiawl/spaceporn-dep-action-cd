@@ -116,7 +116,7 @@ jobs:
         while [[ "${conclusion:-}" != 'success' && "${conclusion:-}" != 'failure' ]]
         do
           sleep 2
-          conclusion="$(gh run view --json "${FIELD}" "${ID}" | jq -r ".${FIELD}")"
+          conclusion="$(gh run view --json "${FIELD}" "${ID}" --jq ".${FIELD}")"
         done
         printf 'job_result=%s\n' "${conclusion}" >> "${GITHUB_OUTPUT}"
 
