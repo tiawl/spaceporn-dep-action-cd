@@ -1,3 +1,4 @@
+# dummy comment
 name: 'CD ping'
 description: 'Notify the user of the dependency that a new release is available'
 inputs:
@@ -27,12 +28,6 @@ runs:
       with:
         version: ${{ env.zig_version }}
 
-    - uses: actions/checkout@v4
-      with:
-        repository: "${{ github.repository_owner }}/${{ inputs.repository_name }}"
-        fetch-depth: 0
-        fetch-tags: true
-
     - name: Notify ${{ inputs.user }}
       env:
         ENDPOINT: "/repos/${{ github.repository_owner }}/${{ inputs.user }}/dispatches"
@@ -41,11 +36,10 @@ runs:
         IS_COMPOSITE: "${{ inputs.is_composite }}"
         PAYLOAD_DEPENDENCY: "client_payload[dependency]=${{ inputs.repository_name }}"
         PAYLOAD_TAG: "client_payload[tag]=${{ inputs.tag }}"
-        TAG: "${{ inputs.tag }}"
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.repository_name }}/archive/refs/tags/${{ inputs.tag }}.tar.gz"
       shell: ${{ env.shell }}
       run: |
-        git show-ref --tags "${TAG}" --quiet && git checkout "${TAG}"
-        payload_hash="client_payload[hash]=$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch .; fi)"
+        payload_hash="client_payload[hash]=$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch "${URL}"; fi)"
         gh api --method POST \
           -H 'Accept: application/vnd.github+json' \
           -H 'X-GitHub-Api-Version: 2022-11-28' \
