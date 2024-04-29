@@ -40,12 +40,8 @@ jobs:
           PAYLOAD_TAG: "${{ github.event.client_payload.tag }}"
         shell: bash
         run: |
-          tags="$(git tag | wc -l)"
-          if [[ "${tags}" != '0' ]]
-          then
-            git show-ref --tags "${PAYLOAD_TAG}"
-            git checkout "${PAYLOAD_TAG}"
-          fi
+          git show-ref --tags "${PAYLOAD_TAG}"
+          git checkout "${PAYLOAD_TAG}"
           if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
           then
             printf 'zig=true\n' >> "${GITHUB_ENV}"
@@ -64,7 +60,7 @@ jobs:
         run: |
           if [[ "${ZIG}" == 'true' ]]
           then
-            [[ "${PAYLOAD_HASH}" == "$(zig fetch .)" ]]
+            [[ "${PAYLOAD_HASH}" == "$(zig fetch "${GITHUB_WORKFLOW}")" ]]
           else
             [[ -z "${PAYLOAD_HASH}" ]]
           fi
