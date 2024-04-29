@@ -29,19 +29,15 @@ jobs:
         run: |
           printf '%s\n' "${CLIENT_PAYLOAD}"
 
-      - uses: actions/checkout@v4
+      - name: Check client payload tag field and repository
+        uses: actions/checkout@v4
         with:
           repository: "${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}"
-          fetch-depth: 0
-          fetch-tags: true
+          ref: "${{ github.event.client_payload.tag }}"
 
-      - name: Check client payload tag field
-        env:
-          PAYLOAD_TAG: "${{ github.event.client_payload.tag }}"
+      - name: Does it needs zig ?
         shell: bash
         run: |
-          git show-ref --tags "${PAYLOAD_TAG}"
-          git checkout "${PAYLOAD_TAG}"
           if [[ -f "${GITHUB_WORKSPACE}/build.zig" ]]
           then
             printf 'zig=true\n' >> "${GITHUB_ENV}"
