@@ -96,7 +96,7 @@ jobs:
           sleep 2
           id="$(gh run list -w "${WORKFLOW_NAME}" -L 1 --json "${FIELD}" | jq ".[] | .${FIELD}")"
         done
-        printf 'job_id=%s\n' >> "${GITHUB_OUTPUT}"
+        printf 'job_id=%s\n' "${id}" >> "${GITHUB_OUTPUT}"
 
     - name: Wait for the new job to end
       id: end
