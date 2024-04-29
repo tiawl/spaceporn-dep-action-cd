@@ -91,10 +91,9 @@ jobs:
         PREVIOUS_RUN_ID: "${{ steps.previous_run.outputs.id }}"
       shell: bash
       run: |
-        id="${PREVIOUS_RUN_ID}"
-        while [[ "${id}" == "${PREVIOUS_RUN_ID}" ]]
+        while [[ -z "${id:-}" || "${id:-}" == "${PREVIOUS_RUN_ID}" ]]
         do
-          sleep 0.1
+          sleep 2
           id="$(gh run list -w "${WORKFLOW_NAME}" -L 1 --json "${FIELD}" | jq ".[] | .${FIELD}")"
         done
         printf 'job_id=%s\n' >> "${GITHUB_OUTPUT}"
@@ -109,7 +108,7 @@ jobs:
       run: |
         while [[ "${conclusion:-}" != 'success' && "${conclusion:-}" != 'failure' ]]
         do
-          sleep 0.1
+          sleep 2
           conclusion="$(gh run view --json "${FIELD}" "${ID}" | jq -r ".${FIELD}")"
         done
         printf 'job_result=%s\n' "${conclusion}" >> "${GITHUB_OUTPUT}"
