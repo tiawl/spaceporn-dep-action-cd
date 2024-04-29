@@ -36,7 +36,7 @@ runs:
         IS_COMPOSITE: "${{ inputs.is_composite }}"
         PAYLOAD_DEPENDENCY: "client_payload[dependency]=${{ inputs.repository_name }}"
         PAYLOAD_TAG: "client_payload[tag]=${{ inputs.tag }}"
-        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.repository }}/archive/refs/tags/${{ inputs.tag }}.tar.gz"
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.repository_name }}/archive/refs/tags/${{ inputs.tag }}.tar.gz"
       shell: ${{ env.shell }}
       run: |
         payload_hash="client_payload[hash]=$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch "${URL}"; fi)"
