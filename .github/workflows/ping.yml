@@ -21,10 +21,10 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
-          - spaceporn-dep-action-env
-          - spaceporn-dep-action-bot
-          - spaceporn-dep-action-ci
-          - spaceporn-dep-action-cd-pong
+          - spaceporn-action-env
+          - spaceporn-action-bot
+          - spaceporn-action-ci
+          - spaceporn-action-cd-pong
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4

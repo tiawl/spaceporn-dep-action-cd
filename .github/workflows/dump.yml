@@ -13,11 +13,11 @@ on:
       - ping-glslang.zig
       - ping-shaderc.zig
       - ping-spaceporn
-      - ping-spaceporn-dep-action-env
-      - ping-spaceporn-dep-action-bot
-      - ping-spaceporn-dep-action-ci
-      - ping-spaceporn-dep-action-cd-ping
-      - ping-spaceporn-dep-action-cd-pong
+      - ping-spaceporn-action-env
+      - ping-spaceporn-action-bot
+      - ping-spaceporn-action-ci
+      - ping-spaceporn-action-cd-ping
+      - ping-spaceporn-action-cd-pong
 
 jobs:
   dump:
@@ -29,7 +29,7 @@ jobs:
         run: |
           printf '%s\n' "${CLIENT_PAYLOAD}"
 
-      - uses: tiawl/spaceporn-dep-action-env@v1.0.0
+      - uses: tiawl/spaceporn-action-env@v1.0.0
 
       - name: Check client payload tag field and repository
         uses: actions/checkout@v4
