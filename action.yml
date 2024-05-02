@@ -8,16 +8,16 @@ inputs:
     description: 'Is this a composite action repository ?'
     required: false
     default: 'false'
+  event:
+    description: 'Event to trigger'
+    required: false
+    default: 'ping'
   to:
     description: 'The ping receiver'
     required: true
   tag:
     description: 'The pushed tag'
     required: true
-  test:
-    description: 'Is is a test ?'
-    required: false
-    default: 'false'
   token:
     description: 'The github token'
     required: true
@@ -34,7 +34,7 @@ runs:
     - name: Notify ${{ inputs.to }}
       env:
         ENDPOINT: "/repos/${{ github.repository_owner }}/${{ inputs.to }}/dispatches"
-        EVENT_TYPE: "event_type=ping-${{ inputs.from }}"
+        EVENT_TYPE: "event_type=${{ inputs.event }}-from-${{ inputs.from }}"
         GH_TOKEN: "${{ inputs.token }}"
         IS_COMPOSITE: "${{ inputs.is_composite }}"
         PAYLOAD_FROM: "client_payload[from]=${{ inputs.from }}"

@@ -73,7 +73,7 @@ jobs:
       id: previous_run
       env:
         GH_TOKEN: "${{ github.token }}"
-        TITLE: "ping-${{ matrix.repo }}"
+        TITLE: "dump-from-${{ matrix.repo }}"
         WORKFLOW_NAME: 'dump'
       shell: bash
       run: |
@@ -84,9 +84,9 @@ jobs:
       with:
         from: "${{ matrix.repo }}"
         is_composite: "${{ steps.prepare.outputs.is_composite }}"
+        event: 'dump'
         to: "${{ github.event.repository.name }}"
         tag: "${{ steps.prepare.outputs.tag }}"
-        test: 'true'
         token: "${{ secrets.PAT }}"
 
     - uses: actions/checkout@v4
@@ -96,7 +96,7 @@ jobs:
       env:
         GH_TOKEN: "${{ github.token }}"
         PREVIOUS_RUN_ID: "${{ steps.previous_run.outputs.id }}"
-        TITLE: "ping-${{ matrix.repo }}"
+        TITLE: "dump-from-${{ matrix.repo }}"
         WORKFLOW_NAME: 'dump'
       shell: bash
       run: |

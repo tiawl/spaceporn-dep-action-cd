@@ -3,21 +3,21 @@ name: dump
 on:
   repository_dispatch:
     types:
-      - ping-toolbox
-      - ping-vulkan.zig
-      - ping-wayland.zig
-      - ping-X11.zig
-      - ping-glfw.zig
-      - ping-cimgui.zig
-      - ping-spirv.zig
-      - ping-glslang.zig
-      - ping-shaderc.zig
-      - ping-spaceporn
-      - ping-spaceporn-action-env
-      - ping-spaceporn-action-bot
-      - ping-spaceporn-action-ci
-      - ping-spaceporn-action-cd-ping
-      - ping-spaceporn-action-cd-pong
+      - dump-from-toolbox
+      - dump-from-vulkan.zig
+      - dump-from-wayland.zig
+      - dump-from-X11.zig
+      - dump-from-glfw.zig
+      - dump-from-cimgui.zig
+      - dump-from-spirv.zig
+      - dump-from-glslang.zig
+      - dump-from-shaderc.zig
+      - dump-from-spaceporn
+      - dump-from-spaceporn-action-env
+      - dump-from-spaceporn-action-bot
+      - dump-from-spaceporn-action-ci
+      - dump-from-spaceporn-action-cd-dump-from
+      - dump-from-spaceporn-action-cd-pong
 
 jobs:
   dump:
