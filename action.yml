@@ -1,19 +1,23 @@
 name: 'CD ping'
-description: 'Notify the user of the dependency that a new release is available'
+description: 'Notify a repository that a new release is available'
 inputs:
-  repository_name:
-    description: 'The name of the repository'
+  from:
+    description: 'The ping sender'
     required: true
   is_composite:
     description: 'Is this a composite action repository ?'
     required: false
     default: 'false'
-  user:
-    description: 'The User of this repository'
+  to:
+    description: 'The ping receiver'
     required: true
   tag:
     description: 'The pushed tag'
     required: true
+  test:
+    description: 'Is is a test ?'
+    required: false
+    default: 'false'
   token:
     description: 'The github token'
     required: true
@@ -27,16 +31,16 @@ runs:
       with:
         version: ${{ env.zig_version }}
 
-    - name: Notify ${{ inputs.user }}
+    - name: Notify ${{ inputs.to }}
       env:
-        ENDPOINT: "/repos/${{ github.repository_owner }}/${{ inputs.user }}/dispatches"
-        EVENT_TYPE: "event_type=ping-${{ inputs.repository_name }}"
+        ENDPOINT: "/repos/${{ github.repository_owner }}/${{ inputs.to }}/dispatches"
+        EVENT_TYPE: "event_type=ping-${{ inputs.from }}"
         GH_TOKEN: "${{ inputs.token }}"
         IS_COMPOSITE: "${{ inputs.is_composite }}"
-        PAYLOAD_DEPENDENCY: "client_payload[dependency]=${{ inputs.repository_name }}"
+        PAYLOAD_FROM: "client_payload[from]=${{ inputs.from }}"
         PAYLOAD_TAG: "client_payload[tag]=${{ inputs.tag }}"
-        PAYLOAD_USER: "client_payload[user]=${{ inputs.user }}"
-        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.repository_name }}/archive/refs/tags/${{ inputs.tag }}.tar.gz"
+        PAYLOAD_TEST: "client_payload[test]=${{ inputs.test }}"
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.from }}/archive/refs/tags/${{ inputs.tag }}.tar.gz"
       shell: ${{ env.shell }}
       run: |
         payload_hash="client_payload[hash]=$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch "${URL}"; fi)"
@@ -44,5 +48,5 @@ runs:
           -H 'Accept: application/vnd.github+json' \
           -H 'X-GitHub-Api-Version: 2022-11-28' \
           -f "${EVENT_TYPE}" \
-          -F "${PAYLOAD_DEPENDENCY}" -F "${PAYLOAD_TAG}" -F "${payload_hash}" \
-          -F "${PAYLOAD_USER}" "${ENDPOINT}"
+          -F "${PAYLOAD_FROM}" -F "${PAYLOAD_TAG}" -F "${payload_hash}" \
+          -F "${PAYLOAD_TEST}" "${ENDPOINT}"

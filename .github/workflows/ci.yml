@@ -82,10 +82,11 @@ jobs:
 
     - uses: ./
       with:
-        repository_name: "${{ matrix.repo }}"
+        from: "${{ matrix.repo }}"
         is_composite: "${{ steps.prepare.outputs.is_composite }}"
-        user: "${{ github.event.repository.name }}"
+        to: "${{ github.event.repository.name }}"
         tag: "${{ steps.prepare.outputs.tag }}"
+        test: 'true'
         token: "${{ secrets.PAT }}"
 
     - uses: actions/checkout@v4
