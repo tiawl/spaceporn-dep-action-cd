@@ -16,7 +16,7 @@ on:
       - dump-from-spaceporn-action-env
       - dump-from-spaceporn-action-bot
       - dump-from-spaceporn-action-ci
-      - dump-from-spaceporn-action-cd-dump-from
+      - dump-from-spaceporn-action-cd-ping
       - dump-from-spaceporn-action-cd-pong
 
 jobs:
