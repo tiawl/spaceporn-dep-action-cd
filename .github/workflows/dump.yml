@@ -34,7 +34,7 @@ jobs:
       - name: Check client payload tag field and repository
         uses: actions/checkout@v4
         with:
-          repository: "${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}"
+          repository: "${{ github.repository_owner }}/${{ github.event.client_payload.from }}"
           ref: "${{ github.event.client_payload.tag }}"
 
       - name: Does it needs zig ?
@@ -56,7 +56,7 @@ jobs:
       - name: Check client payload hash field
         env:
           PAYLOAD_HASH: "${{ github.event.client_payload.hash }}"
-          URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}/archive/refs/tags/${{ github.event.client_payload.tag }}.tar.gz"
+          URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.client_payload.from }}/archive/refs/tags/${{ github.event.client_payload.tag }}.tar.gz"
           ZIG: "${{ steps.zig.outputs.needed }}"
         shell: bash
         run: |
