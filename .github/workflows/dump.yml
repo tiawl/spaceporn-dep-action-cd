@@ -3,21 +3,21 @@ name: dump
 on:
   repository_dispatch:
     types:
-      - ping-toolbox
-      - ping-vulkan.zig
-      - ping-wayland.zig
-      - ping-X11.zig
-      - ping-glfw.zig
-      - ping-cimgui.zig
-      - ping-spirv.zig
-      - ping-glslang.zig
-      - ping-shaderc.zig
-      - ping-spaceporn
-      - ping-spaceporn-action-env
-      - ping-spaceporn-action-bot
-      - ping-spaceporn-action-ci
-      - ping-spaceporn-action-cd-ping
-      - ping-spaceporn-action-cd-pong
+      - dump-from-toolbox
+      - dump-from-vulkan.zig
+      - dump-from-wayland.zig
+      - dump-from-X11.zig
+      - dump-from-glfw.zig
+      - dump-from-cimgui.zig
+      - dump-from-spirv.zig
+      - dump-from-glslang.zig
+      - dump-from-shaderc.zig
+      - dump-from-spaceporn
+      - dump-from-spaceporn-action-env
+      - dump-from-spaceporn-action-bot
+      - dump-from-spaceporn-action-ci
+      - dump-from-spaceporn-action-cd-ping
+      - dump-from-spaceporn-action-cd-pong
 
 jobs:
   dump:
@@ -29,12 +29,12 @@ jobs:
         run: |
           printf '%s\n' "${CLIENT_PAYLOAD}"
 
-      - uses: tiawl/spaceporn-action-env@v1.0.0
+      - uses: tiawl/spaceporn-action-env@v1.0.1
 
       - name: Check client payload tag field and repository
         uses: actions/checkout@v4
         with:
-          repository: "${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}"
+          repository: "${{ github.repository_owner }}/${{ github.event.client_payload.from }}"
           ref: "${{ github.event.client_payload.tag }}"
 
       - name: Does it needs zig ?
@@ -56,7 +56,7 @@ jobs:
       - name: Check client payload hash field
         env:
           PAYLOAD_HASH: "${{ github.event.client_payload.hash }}"
-          URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.client_payload.dependency }}/archive/refs/tags/${{ github.event.client_payload.tag }}.tar.gz"
+          URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ github.event.client_payload.from }}/archive/refs/tags/${{ github.event.client_payload.tag }}.tar.gz"
           ZIG: "${{ steps.zig.outputs.needed }}"
         shell: bash
         run: |

@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
     strategy:
-      max-parallel: 5
+      max-parallel: 3
       matrix:
         repo:
           - toolbox
@@ -73,7 +73,7 @@ jobs:
       id: previous_run
       env:
         GH_TOKEN: "${{ github.token }}"
-        TITLE: "ping-${{ matrix.repo }}"
+        TITLE: "dump-from-${{ matrix.repo }}"
         WORKFLOW_NAME: 'dump'
       shell: bash
       run: |
@@ -82,9 +82,10 @@ jobs:
 
     - uses: ./
       with:
-        repository_name: "${{ matrix.repo }}"
+        from: "${{ matrix.repo }}"
         is_composite: "${{ steps.prepare.outputs.is_composite }}"
-        user: "${{ github.event.repository.name }}"
+        event: 'dump'
+        to: "${{ github.event.repository.name }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         token: "${{ secrets.PAT }}"
 
@@ -95,7 +96,7 @@ jobs:
       env:
         GH_TOKEN: "${{ github.token }}"
         PREVIOUS_RUN_ID: "${{ steps.previous_run.outputs.id }}"
-        TITLE: "ping-${{ matrix.repo }}"
+        TITLE: "dump-from-${{ matrix.repo }}"
         WORKFLOW_NAME: 'dump'
       shell: bash
       run: |
