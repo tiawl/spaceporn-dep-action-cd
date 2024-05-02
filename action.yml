@@ -5,7 +5,7 @@ inputs:
     description: 'The ping sender'
     required: true
   is_composite:
-    description: 'Is this a composite action repository ?'
+    description: 'Is the pig sender a composite action repository ?'
     required: false
     default: 'false'
   event:
