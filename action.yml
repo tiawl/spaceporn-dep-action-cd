@@ -39,7 +39,6 @@ runs:
         IS_COMPOSITE: "${{ inputs.is_composite }}"
         PAYLOAD_FROM: "client_payload[from]=${{ inputs.from }}"
         PAYLOAD_TAG: "client_payload[tag]=${{ inputs.tag }}"
-        PAYLOAD_TEST: "client_payload[test]=${{ inputs.test }}"
         URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.from }}/archive/refs/tags/${{ inputs.tag }}.tar.gz"
       shell: ${{ env.shell }}
       run: |
@@ -49,4 +48,4 @@ runs:
           -H 'X-GitHub-Api-Version: 2022-11-28' \
           -f "${EVENT_TYPE}" \
           -F "${PAYLOAD_FROM}" -F "${PAYLOAD_TAG}" -F "${payload_hash}" \
-          -F "${PAYLOAD_TEST}" "${ENDPOINT}"
+          "${ENDPOINT}"
