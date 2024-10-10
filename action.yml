@@ -27,7 +27,7 @@ runs:
     - uses: tiawl/spaceporn-action-env@v1.0.2
 
     - if: inputs.is_composite != 'true'
-      uses: goto-bus-stop/setup-zig@v2.2.0
+      uses: mlugg/setup-zig@v1
       with:
         version: ${{ env.zig_version }}
 
