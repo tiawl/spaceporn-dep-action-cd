@@ -48,7 +48,7 @@ jobs:
             printf 'needed=false\n' >> "${GITHUB_OUTPUT}"
           fi
 
-      - uses: goto-bus-stop/setup-zig@v2.2.0
+      - uses: mlugg/setup-zig@v1
         if: steps.zig.outputs.needed == 'true'
         with:
           version: ${{ env.zig_version }}
