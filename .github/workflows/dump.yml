@@ -29,7 +29,7 @@ jobs:
         run: |
           printf '%s\n' "${CLIENT_PAYLOAD}"
 
-      - uses: tiawl/spaceporn-action-env@v1.0.2
+      - uses: tiawl/spaceporn-action-env@v1.0.3
 
       - name: Check client payload tag field and repository
         uses: actions/checkout@v4
