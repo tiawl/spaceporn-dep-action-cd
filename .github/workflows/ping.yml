@@ -21,6 +21,7 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
+          - oniguruma.zig
           - spaceporn-action-env
           - spaceporn-action-bot
           - spaceporn-action-ci
