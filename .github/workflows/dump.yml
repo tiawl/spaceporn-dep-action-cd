@@ -12,6 +12,7 @@ on:
       - dump-from-spirv.zig
       - dump-from-glslang.zig
       - dump-from-shaderc.zig
+      - dump-from-oniguruma.zig
       - dump-from-spaceporn
       - dump-from-spaceporn-action-env
       - dump-from-spaceporn-action-bot
